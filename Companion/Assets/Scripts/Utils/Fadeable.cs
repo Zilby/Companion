@@ -25,10 +25,6 @@ public abstract class Fadeable : MonoBehaviour
     [ConditionalHideAttribute("fadeOnEnable", true, false)]
 	public bool fadeIn = true; //false for out
     
-    [Header("Delayed Fade")]
-    public float fadeDelay = 0;
-	public float fadeDuration = FADE_IN_DUR;
-    
     [Header("Other Options")]
     /// <summary>
     /// Disable game object after fading out
@@ -118,30 +114,27 @@ public abstract class Fadeable : MonoBehaviour
 		BlocksRaycasts = false;
     }
 
-	public virtual void SelfDelayedFadeIn(float delay = 1f) {
-		fadeDelay = delay;
-		StartCoroutine(DelayedFadeIn());
+	public virtual void SelfDelayedFadeIn(float fadeDelay = 1f, float startAlpha = 0, float endAlpha = 1, float dur = FADE_IN_DUR) {
+		StartCoroutine(DelayedFadeIn(fadeDelay, startAlpha, endAlpha, dur));
 	}
 
-	public virtual void SelfDelayedFadeOut(float delay = 1f)
+	public virtual void SelfDelayedFadeOut(float fadeDelay = 1f, float endAlpha = 1, float dur = FADE_IN_DUR)
 	{
-		fadeDelay = delay;
-		StartCoroutine(DelayedFadeOut());
+		StartCoroutine(DelayedFadeOut(fadeDelay, endAlpha, dur));
 	}
 
-	public virtual IEnumerator DelayedFadeIn() {
+	public virtual IEnumerator DelayedFadeIn(float fadeDelay = 1f, float startAlpha = 0, float endAlpha = 1, float dur = FADE_IN_DUR) {
 		IsVisible = false;
 		Alpha = 0;
 		BlocksRaycasts = hitboxDuringFade;
 		yield return new WaitForSeconds(fadeDelay);
-		SelfFadeIn(dur:fadeDuration);
+		yield return FadeIn(startAlpha, endAlpha, dur);
 	}
 
-    public virtual IEnumerator DelayedFadeOut() {
+    public virtual IEnumerator DelayedFadeOut(float fadeDelay = 1f, float endAlpha = 0, float dur = FADE_IN_DUR) {
 		IsVisible = true;
-		Alpha = 1;
 		yield return new WaitForSeconds(fadeDelay);
-		SelfFadeOut(dur:fadeDuration);
+		yield return FadeOut(endAlpha, dur);
 	}
 
     /// <summary>
