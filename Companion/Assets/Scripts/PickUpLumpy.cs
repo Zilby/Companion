@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityStandardAssets.Characters.FirstPerson;
 
 public class PickUpLumpy : MonoBehaviour
 {
@@ -38,6 +37,7 @@ public class PickUpLumpy : MonoBehaviour
 		transform.parent.parent = Camera.main.transform;
 		Rigidbody rBody = GetComponentInParent<Rigidbody>();
 		rBody.isKinematic = true;
+		LumpyController.instance.spinning = true;
 		float smoothTime = 0.5f;
 		Vector3 velocity = Vector3.zero;
 		while (Vector3.Distance(transform.parent.localPosition, Vector3.forward) > 0.01f)
