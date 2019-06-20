@@ -101,4 +101,22 @@ public class UIManager : MonoBehaviour
 		StopCoroutine(checkForInput);
 		StartCoroutine(GameController.instance.SpawnLumpy());
 	}
+
+	/// <summary>
+	/// Displays the text.
+	/// </summary>
+	/// <param name="text">Text.</param>
+	public void DisplayText(string text)
+	{
+		instructionText.text = text;
+		instructionTextFadeable.SelfFadeIn();
+	}
+
+	/// <summary>
+	/// Fades the text.
+	/// </summary>
+	public void FadeText()
+	{
+		instructionTextFadeable.SelfFadeOut();
+	}
 }
