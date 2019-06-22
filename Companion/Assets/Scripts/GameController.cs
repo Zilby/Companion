@@ -60,6 +60,7 @@ public class GameController : MonoBehaviour
 		aSource.outputAudioMixerGroup = Resources.Load<AudioMixer>("Mixer").FindMatchingGroups("SFX")[0];
 		aSource.Play();
 		yield return wall.FadeOut(dur: 0.8f);
+		yield return eventBasedDialogues[1].Dialogue();
 		yield return new WaitForSeconds(5f);
 		Destroy(g);
 	}

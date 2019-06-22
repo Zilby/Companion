@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class DialogueTrigger : MonoBehaviour
 {
+	public float initialDelay = 0;
+
 	[System.Serializable]
 	public struct DialogueSegment
 	{
@@ -28,6 +30,7 @@ public class DialogueTrigger : MonoBehaviour
 
 	public IEnumerator Dialogue()
 	{
+		yield return initialDelay;
 		foreach (DialogueSegment d in segments)
 		{
 			UIManager.instance.DisplayDialogue(d.text);

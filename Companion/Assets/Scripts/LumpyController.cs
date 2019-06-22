@@ -57,7 +57,7 @@ public class LumpyController : MonoBehaviour
 			{
 				break;
 			}
-			t += Time.deltaTime / 0.2f;
+			t += Time.deltaTime / 0.3f;
 			yield return null;
 		}
 	}
@@ -66,10 +66,10 @@ public class LumpyController : MonoBehaviour
 	{
 		for (; ; )
 		{
-			yield return new WaitForSeconds(Random.Range(0.04f, 0.12f));
+			//yield return new WaitForSeconds(Random.Range(0.04f, 0.12f));
 			float r = Random.Range(15f, 140f);
 			Color newColor = new Color(r / 255f, Random.Range(r, 190f) / 255f, Random.Range(170f, 220f) / 255f) * Random.Range(1.2f, 2.8f);
-			float lerpTime = Random.Range(0.025f, 0.1f);
+			float lerpTime = Random.Range(0.1f, 0.3f);
 			//mat.SetColor("_EmissionColor", newColor);
 			float t = 0;
 			for (; ; )

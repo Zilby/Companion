@@ -453,7 +453,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 5e9e851c0e142814dac026a256ba2ac0, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 5e9e851c0e142814dac026a256ba2ac0, type: 3}
       propertyPath: m_LocalPosition.x
@@ -5816,16 +5816,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8908eca4229d49209f783a52c697d66, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  initialDelay: 0
   segments:
-  - clip: {fileID: 0}
+  - clip: {fileID: 8300000, guid: c3a451dd3c1ee4ce396980b434cb44c2, type: 3}
     text: Oh! Who are you? You know what, doesn't matter, can you help me get out
       of here?
     delay: 0.5
-  - clip: {fileID: 0}
+  - clip: {fileID: 8300000, guid: c3a451dd3c1ee4ce396980b434cb44c2, type: 3}
     text: I've been stuck here for days and haven't been able to figure a way out...
       or... how to move for that matter. I seem to be some... sort of blob now.
     delay: 0.2
-  - clip: {fileID: 0}
+  - clip: {fileID: 8300000, guid: c3a451dd3c1ee4ce396980b434cb44c2, type: 3}
     text: But now you're here! Together I'm sure we can find a way out of this box
       and back to civilization. Come on, let's take a look around.
     delay: 0
@@ -10688,7 +10689,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 5e9e851c0e142814dac026a256ba2ac0, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 5e9e851c0e142814dac026a256ba2ac0, type: 3}
       propertyPath: m_LocalPosition.x
@@ -10841,11 +10842,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8908eca4229d49209f783a52c697d66, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  initialDelay: 3
   segments:
-  - clip: {fileID: 0}
+  - clip: {fileID: 8300000, guid: c3a451dd3c1ee4ce396980b434cb44c2, type: 3}
     text: '...Well that''s convenient. I guess we''re a winning combination!'
     delay: 1.5
-  - clip: {fileID: 0}
+  - clip: {fileID: 8300000, guid: c3a451dd3c1ee4ce396980b434cb44c2, type: 3}
     text: ' What an odd place.. I hope we can find our way out of here...  '
     delay: 0
 --- !u!4 &1019583197
@@ -12223,7 +12225,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: -210}
-  m_SizeDelta: {x: 800, y: 100}
+  m_SizeDelta: {x: 500, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1765325239
 MonoBehaviour:
@@ -12275,8 +12277,8 @@ MonoBehaviour:
   m_outlineColor:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontSize: 30
-  m_fontSizeBase: 30
+  m_fontSize: 28
+  m_fontSizeBase: 28
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -17839,16 +17841,6 @@ PrefabInstance:
       propertyPath: friendlyMPS
       value: 
       objectReference: {fileID: 103052789}
-    - target: {fileID: 766444842061311534, guid: 0e284355a7cb4476e8c3f19f4c487110,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 200
-      objectReference: {fileID: 0}
-    - target: {fileID: 785335745458618911, guid: 0e284355a7cb4476e8c3f19f4c487110,
-        type: 3}
-      propertyPath: m_Center.y
-      value: -190
-      objectReference: {fileID: 0}
     - target: {fileID: 621152019, guid: 0e284355a7cb4476e8c3f19f4c487110, type: 3}
       propertyPath: mMat
       value: 

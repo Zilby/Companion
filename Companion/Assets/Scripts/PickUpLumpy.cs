@@ -45,7 +45,7 @@ public class PickUpLumpy : MonoBehaviour
 			transform.parent.localPosition = Vector3.SmoothDamp(transform.parent.localPosition, Vector3.forward, ref velocity, smoothTime);
 			yield return null;
 		}
-		yield return new WaitForSeconds(5f);
+		yield return GameController.instance.eventBasedDialogues[0].Dialogue();
 		velocity = Vector3.zero;
 		Vector3 holdPosition = new Vector3(0.65f, -0.36f, 1f);
 		while (Vector3.Distance(transform.parent.localPosition, holdPosition) > 0.01f)
