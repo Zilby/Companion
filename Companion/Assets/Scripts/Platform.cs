@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Platform class for managing platform behavior. 
+/// </summary>
 public class Platform : MonoBehaviour
 {
 	public Material defaultM;
@@ -20,19 +23,29 @@ public class Platform : MonoBehaviour
 
 	public Color friendlyColor;
 
+	public AudioSource aSource;
+
+	public AudioClip clip;
+
 	private Coroutine colorLerp;
+
 
 	private void Reset()
 	{
 		ps = GetComponentInChildren<ParticleSystemRenderer>();
 		rend = GetComponent<MeshRenderer>();
+		aSource = GetComponent<AudioSource>();
 		defaultM = Resources.Load<Material>("Platform");
-		friendlyM = Resources.Load<Material>("PlatformFriendly");
+		friendlyM = new Material(defaultM);
 		defaultMPS = Resources.Load<Material>("PlatformParticles");
-		friendlyMPS = Resources.Load<Material>("PlatformParticlesFriendly");
+		friendlyMPS = new Material(defaultMPS);
 		defaultColor = defaultM.GetColor("_EmissionColor");
-		friendlyColor = friendlyM.GetColor("_EmissionColor");
+		friendlyColor = Resources.Load<Material>("PlatformFriendly").GetColor("_EmissionColor");
+		SetFriendlyColors();
+
+		clip = Resources.Load<AudioClip>("Basic Note Low");
 	}
+
 
 	private void OnTriggerEnter(Collider other)
 	{
@@ -40,10 +53,14 @@ public class Platform : MonoBehaviour
 		{
 			rend.sharedMaterial = friendlyM;
 			ps.sharedMaterial = friendlyMPS;
-			if (colorLerp != null) {
+			if (colorLerp != null)
+			{
 				StopCoroutine(colorLerp);
 			}
-			colorLerp = StartCoroutine(ColorLerp(defaultColor, friendlyColor));
+			aSource.pitch = Random.Range(0.3f, 1.3f);
+			aSource.PlayOneShot(clip);
+			SetFriendlyColors();
+			//colorLerp = StartCoroutine(ColorLerp(0.05f, defaultColor, friendlyColor, friendlyM, friendlyMPS));
 		}
 	}
 
@@ -52,25 +69,49 @@ public class Platform : MonoBehaviour
 	{
 		if (other.tag == "Player")
 		{
-			rend.sharedMaterial = defaultM;
-			ps.sharedMaterial = defaultMPS;
 			if (colorLerp != null)
 			{
 				StopCoroutine(colorLerp);
 			}
-			colorLerp = StartCoroutine(ColorLerp(friendlyColor, defaultColor));
+			colorLerp = StartCoroutine(ColorLerp(0.6f, friendlyColor, defaultColor, defaultM, defaultMPS));
 		}
 	}
 
-	private IEnumerator ColorLerp(Color color1, Color color2)
+
+	/// <summary>
+	/// Sets platform to the default friendly colors.
+	/// </summary>
+	private void SetFriendlyColors()
+	{
+		friendlyM.SetColor("_EmissionColor", friendlyColor);
+		friendlyMPS.SetColor("_EmissionColor", friendlyColor);
+		friendlyMPS.SetColor("_Color", friendlyColor);
+	}
+
+
+	/// <summary>
+	/// Lerps the material colors
+	/// </summary>
+	/// <param name="duration">Duration.</param>
+	/// <param name="color1">Color1.</param>
+	/// <param name="color2">Color2.</param>
+	/// <param name="mat1">Platform mat</param>
+	/// <param name="mat2">Particle System mat</param>
+	private IEnumerator ColorLerp(float duration, Color color1, Color color2, Material mat1, Material mat2)
 	{
 		float t = 0;
-		float time = Time.time;
-		while (Time.time - time < 0.15f)
+		while (true)
 		{
+			t = Mathf.Min(t, 1);
 			friendlyM.SetColor("_EmissionColor", Color.Lerp(color1, color2, t));
-			t += 7f * Time.deltaTime;
+			if (t >= 1)
+			{
+				break;
+			}
+			t += Time.deltaTime / duration;
 			yield return null;
 		}
+		rend.sharedMaterial = mat1;
+		ps.sharedMaterial = mat2;
 	}
 }

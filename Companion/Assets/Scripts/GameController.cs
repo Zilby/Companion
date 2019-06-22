@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityStandardAssets.Characters.FirstPerson;
+using UnityEngine.Audio;
 
 public class GameController : MonoBehaviour
 {
@@ -10,7 +11,7 @@ public class GameController : MonoBehaviour
 	public GameObject lumpy;
 
 	public FadeableMesh wall;
-
+	
 	[Range(0, 2)]
 	public float timescale = 1;
 
@@ -47,6 +48,17 @@ public class GameController : MonoBehaviour
 		{
 			yield return null;
 		}
+		GameObject g = new GameObject();
+		AudioSource aSource = g.AddComponent<AudioSource>();
+		g.transform.position = wall.transform.position;
+		aSource.spatialBlend = 1;
+		aSource.volume = 1;
+		aSource.rolloffMode = AudioRolloffMode.Linear;
+		aSource.clip = Resources.Load<AudioClip>("Fancy Note");
+		aSource.outputAudioMixerGroup = Resources.Load<AudioMixer>("Mixer").FindMatchingGroups("SFX")[0];
+		aSource.Play();
 		yield return wall.FadeOut(dur: 0.8f);
+		yield return new WaitForSeconds(5f);
+		Destroy(g);
 	}
 }

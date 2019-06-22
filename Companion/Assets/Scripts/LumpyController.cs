@@ -64,13 +64,17 @@ public class LumpyController : MonoBehaviour
 			float r = Random.Range(15f, 140f);
 			Color newColor = new Color(r / 255f, Random.Range(r, 190f) / 255f, Random.Range(170f, 220f) / 255f) * Random.Range(1.2f, 2.8f);
 			float lerpTime = Random.Range(0.025f, 0.1f);
-			float time = Time.time;
 			//mat.SetColor("_EmissionColor", newColor);
 			float t = 0;
-			while (Time.time - time < lerpTime)
+			for (; ; )
 			{
+				t = Mathf.Min(t, 1);
 				mat.SetColor("_EmissionColor", Color.Lerp(mat.GetColor("_EmissionColor"), newColor, t));
-				t += 7f * Time.deltaTime;
+				if (t >= 1)
+				{
+					break;
+				}
+				t += Time.deltaTime / lerpTime;
 				yield return null;
 			}
 		}
