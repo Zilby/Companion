@@ -11,6 +11,8 @@ public class GameController : MonoBehaviour
 	public GameObject lumpy;
 
 	public FadeableMesh wall;
+
+	public List<DialogueTrigger> eventBasedDialogues;
 	
 	[Range(0, 2)]
 	public float timescale = 1;

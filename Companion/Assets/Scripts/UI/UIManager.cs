@@ -13,18 +13,13 @@ public class UIManager : MonoBehaviour
 	public Fadeable darkener;
 	public TextMeshProUGUI instructionText;
 	public Fadeable instructionTextFadeable;
+	public TextMeshProUGUI dialogueText;
+	public Fadeable dialogueTextFadeable;
 
 	private Coroutine checkForInput;
 	private bool mouseMoved = false;
 	private bool characterMoved = false;
 	private bool characterJumped = false;
-
-	private void Reset()
-	{
-		darkener = GetComponentInChildren<Fadeable>();
-		instructionText = GetComponentInChildren<TextMeshProUGUI>();
-		instructionTextFadeable = instructionText.GetComponent<Fadeable>();
-	}
 
 	private void Awake()
 	{
@@ -120,6 +115,26 @@ public class UIManager : MonoBehaviour
 	{
 		instructionTextFadeable.SelfFadeOut();
 	}
+
+
+	/// <summary>
+	/// Displays the dialogue.
+	/// </summary>
+	/// <param name="text">Text.</param>
+	public void DisplayDialogue(string text)
+	{
+		dialogueText.text = text;
+		dialogueTextFadeable.SelfFadeIn(dur:0.2f);
+	}
+
+	/// <summary>
+	/// Fades the dialogue.
+	/// </summary>
+	public void FadeDialogue()
+	{
+		dialogueTextFadeable.SelfFadeOut(dur:0.2f);
+	}
+
 
 	/// <summary>
 	/// Fades the screen black and back. 

@@ -18,6 +18,7 @@ public class LumpyController : MonoBehaviour
 
 	private Material mat;
 
+	private AudioSource aSource;
 
 	private void Awake()
 	{
@@ -26,6 +27,7 @@ public class LumpyController : MonoBehaviour
 		mat = rends[0].sharedMaterial;
 		mat.EnableKeyword("_EMISSION");
 		mat.SetColor("_EmissionColor", DEFAULT_COLOR * INTENSITY);
+		aSource = GetComponent<AudioSource>();
 	}
 
 	void Update()
@@ -46,12 +48,16 @@ public class LumpyController : MonoBehaviour
 	public IEnumerator StopTalking()
 	{
 		StopCoroutine(talk);
-		float time = Time.time;
 		float t = 0;
-		while (Time.time - time < 0.25f)
+		for (; ; )
 		{
+			t = Mathf.Min(t, 1);
 			mat.SetColor("_EmissionColor", Color.Lerp(mat.GetColor("_EmissionColor"), DEFAULT_COLOR * INTENSITY, t));
-			t += 7f * Time.deltaTime;
+			if (t >= 1)
+			{
+				break;
+			}
+			t += Time.deltaTime / 0.2f;
 			yield return null;
 		}
 	}
@@ -78,5 +84,15 @@ public class LumpyController : MonoBehaviour
 				yield return null;
 			}
 		}
+	}
+
+	public IEnumerator PlaySegment(AudioClip clip) {
+		aSource.clip = clip;
+		aSource.Play();
+		StartTalking();
+		while(aSource.isPlaying) {
+			yield return null;
+		}
+		yield return StopTalking();
 	}
 }

@@ -15,7 +15,8 @@ public class Death : MonoBehaviour
 		}
 	}
 
-	IEnumerator RepositionPlayer() {
+	IEnumerator RepositionPlayer()
+	{
 		FirstPersonController.main.enabled = false;
 		FirstPersonController.main.transform.position = Checkpoint.current.transform.position;
 		yield return null;
