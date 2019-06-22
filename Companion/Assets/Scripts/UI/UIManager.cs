@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -118,5 +119,18 @@ public class UIManager : MonoBehaviour
 	public void FadeText()
 	{
 		instructionTextFadeable.SelfFadeOut();
+	}
+
+	/// <summary>
+	/// Fades the screen black and back. 
+	/// </summary>
+	/// <param name="fadeDur">Fade dur.</param>
+	/// <param name="delay">Delay.</param>
+	public IEnumerator FadeInNOut(float fadeDur, float delay, Func<IEnumerator> f)
+	{
+		yield return darkener.FadeIn(dur: fadeDur);
+		yield return f();
+		yield return new WaitForSeconds(delay);
+		yield return darkener.FadeOut(dur: fadeDur);
 	}
 }

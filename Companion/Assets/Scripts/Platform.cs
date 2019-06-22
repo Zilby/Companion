@@ -57,7 +57,7 @@ public class Platform : MonoBehaviour
 			{
 				StopCoroutine(colorLerp);
 			}
-			aSource.pitch = Random.Range(0.3f, 1.3f);
+			aSource.pitch = Random.Range(0.45f, 1.3f);
 			aSource.PlayOneShot(clip);
 			SetFriendlyColors();
 			//colorLerp = StartCoroutine(ColorLerp(0.05f, defaultColor, friendlyColor, friendlyM, friendlyMPS));
