@@ -1,5 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 using UnityEngine;
 
 public class PlatformAppearer : MonoBehaviour
@@ -12,6 +15,20 @@ public class PlatformAppearer : MonoBehaviour
 	public Material defaultP;
 	public Material mMat;
 	public Material pMat;
+
+	[InspectorButton("ResetMaterials")]
+	public bool SetUpMaterials;
+
+	public void ResetMaterials()
+	{
+		defaultM = Resources.Load<Material>("Platform");
+		mMat = new Material(defaultM);
+		defaultP = Resources.Load<Material>("PlatformParticles");
+		pMat = new Material(defaultP);
+#if UNITY_EDITOR
+		EditorUtility.SetDirty(this);
+#endif
+	}
 
 	void OnValidate()
 	{
@@ -28,10 +45,7 @@ public class PlatformAppearer : MonoBehaviour
 
 	private void Reset()
 	{
-		defaultM = Resources.Load<Material>("Platform");
-		mMat = new Material(defaultM);
-		defaultP = Resources.Load<Material>("PlatformParticles");
-		pMat = new Material(defaultP);
+		ResetMaterials();
 	}
 
 	private void OnTriggerEnter(Collider other)
@@ -81,8 +95,11 @@ public class PlatformAppearer : MonoBehaviour
 
 		for (int i = 0; i < platforms.Count; ++i)
 		{
-			mRends[i].sharedMaterial = defaultM;
-			pRends[i].sharedMaterial = defaultP;
+			if (mRends[i].sharedMaterial == mMat)
+			{
+				mRends[i].sharedMaterial = defaultM;
+				pRends[i].sharedMaterial = defaultP;
+			}
 		}
 
 		Destroy(gameObject);

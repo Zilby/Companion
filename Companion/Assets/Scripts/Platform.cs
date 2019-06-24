@@ -1,6 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 /// <summary>
 /// Platform class for managing platform behavior. 
@@ -29,12 +32,11 @@ public class Platform : MonoBehaviour
 
 	private Coroutine colorLerp;
 
+	[InspectorButton("ResetMaterials")]
+	public bool SetUpMaterials;
 
-	private void Reset()
+	public void ResetMaterials()
 	{
-		ps = GetComponentsInChildren<ParticleSystemRenderer>();
-		rend = GetComponent<MeshRenderer>();
-		aSource = GetComponent<AudioSource>();
 		defaultM = Resources.Load<Material>("Platform");
 		friendlyM = new Material(defaultM);
 		defaultMPS = Resources.Load<Material>("PlatformParticles");
@@ -42,6 +44,17 @@ public class Platform : MonoBehaviour
 		defaultColor = defaultM.GetColor("_EmissionColor");
 		friendlyColor = Resources.Load<Material>("PlatformFriendly").GetColor("_EmissionColor");
 		SetFriendlyColors();
+#if UNITY_EDITOR
+		EditorUtility.SetDirty(this);
+#endif
+	}
+
+	private void Reset()
+	{
+		ps = GetComponentsInChildren<ParticleSystemRenderer>();
+		rend = GetComponent<MeshRenderer>();
+		aSource = GetComponent<AudioSource>();
+		ResetMaterials();
 
 		clip = Resources.Load<AudioClip>("Basic Note Low");
 	}

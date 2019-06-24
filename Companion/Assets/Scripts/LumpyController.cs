@@ -34,9 +34,9 @@ public class LumpyController : MonoBehaviour
 	{
 		if (spinning)
 		{
-			transform.Rotate(Vector3.forward, 0.5f);
-			transform.Rotate(Vector3.up, 3f);
-			transform.Rotate(Vector3.right, 0.3f);
+			transform.Rotate(Vector3.forward, 15f * Time.deltaTime);
+			transform.Rotate(Vector3.up, 90f * Time.deltaTime);
+			transform.Rotate(Vector3.right, 9f * Time.deltaTime);
 		}
 	}
 

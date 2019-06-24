@@ -25,6 +25,7 @@ public class GameController : MonoBehaviour
 	private void Start()
 	{
 		wall.Show();
+		wall.GetComponent<MeshRenderer>().sharedMaterial = Resources.Load<Material>("Room");
 	}
 
 	private void Update()
@@ -59,6 +60,7 @@ public class GameController : MonoBehaviour
 		aSource.clip = Resources.Load<AudioClip>("Fancy Note");
 		aSource.outputAudioMixerGroup = Resources.Load<AudioMixer>("Mixer").FindMatchingGroups("SFX")[0];
 		aSource.Play();
+		wall.GetComponent<MeshRenderer>().sharedMaterial = Resources.Load<Material>("RoomFade");
 		yield return wall.FadeOut(dur: 0.8f);
 		yield return eventBasedDialogues[1].Dialogue();
 		yield return new WaitForSeconds(5f);
