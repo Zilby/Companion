@@ -15,7 +15,7 @@ public class Platform : MonoBehaviour
 
 	public Material friendlyMPS;
 
-	public ParticleSystemRenderer ps;
+	public ParticleSystemRenderer[] ps;
 
 	public MeshRenderer rend;
 
@@ -32,7 +32,7 @@ public class Platform : MonoBehaviour
 
 	private void Reset()
 	{
-		ps = GetComponentInChildren<ParticleSystemRenderer>();
+		ps = GetComponentsInChildren<ParticleSystemRenderer>();
 		rend = GetComponent<MeshRenderer>();
 		aSource = GetComponent<AudioSource>();
 		defaultM = Resources.Load<Material>("Platform");
@@ -47,12 +47,15 @@ public class Platform : MonoBehaviour
 	}
 
 
-	private void OnTriggerEnter(Collider other)
+	public void OnTriggerEnter(Collider other)
 	{
 		if (other.tag == "Player")
 		{
 			rend.sharedMaterial = friendlyM;
-			ps.sharedMaterial = friendlyMPS;
+			foreach (ParticleSystemRenderer pr in ps)
+			{
+				pr.sharedMaterial = friendlyMPS;
+			}
 			if (colorLerp != null)
 			{
 				StopCoroutine(colorLerp);
@@ -65,7 +68,7 @@ public class Platform : MonoBehaviour
 	}
 
 
-	private void OnTriggerExit(Collider other)
+	public void OnTriggerExit(Collider other)
 	{
 		if (other.tag == "Player")
 		{
@@ -112,6 +115,9 @@ public class Platform : MonoBehaviour
 			yield return null;
 		}
 		rend.sharedMaterial = mat1;
-		ps.sharedMaterial = mat2;
+		foreach (ParticleSystemRenderer pr in ps)
+		{
+			pr.sharedMaterial = mat2;
+		}
 	}
 }

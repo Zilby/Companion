@@ -113,6 +113,10 @@ namespace UnityStandardAssets.Characters.FirstPerson
 			RaycastHit hitInfo;
 			Physics.SphereCast(transform.position, m_CharacterController.radius, Vector3.down, out hitInfo,
 							   m_CharacterController.height / 2f, Physics.AllLayers, QueryTriggerInteraction.Ignore);
+			if (hitInfo.normal.y < 0.5f)
+			{
+				hitInfo.normal = Vector3.up;
+			}
 			desiredMove = Vector3.ProjectOnPlane(desiredMove, hitInfo.normal).normalized;
 
 			m_MoveDir.x = desiredMove.x * speed;

@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class PlatformAppearer : MonoBehaviour
 {
+	public Transform platformSet;
+
 	public List<GameObject> platforms;
 
 	public Material defaultM;
@@ -11,6 +13,18 @@ public class PlatformAppearer : MonoBehaviour
 	public Material mMat;
 	public Material pMat;
 
+	void OnValidate()
+	{
+		if (platformSet != null)
+		{
+			platforms = new List<GameObject>();
+			foreach (Transform child in platformSet)
+			{
+				platforms.Add(child.gameObject);
+			}
+			platformSet = null;
+		}
+	}
 
 	private void Reset()
 	{

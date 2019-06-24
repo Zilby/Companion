@@ -57,6 +57,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa5ef84e0e31743d8ad75780957cc299, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  platformSet: {fileID: 0}
   platforms: []
   defaultM: {fileID: 2100000, guid: 33917ebe479cf425a8053a313d93e3fc, type: 2}
   defaultP: {fileID: 2100000, guid: c861ef43f1cbe4da5872c3171e1ccf4f, type: 2}
