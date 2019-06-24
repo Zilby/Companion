@@ -75,7 +75,6 @@ public class PlatformAppearer : MonoBehaviour
 				break;
 			}
 			float duration = t > 230f / 255f ? 5f : (t > 200f / 255f ? 2f : 0.5f);
-			print(duration);
 			t += Time.deltaTime / duration;
 			yield return null;
 		}
