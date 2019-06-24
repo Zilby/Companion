@@ -53,9 +53,12 @@ public class PlatformAppearer : MonoBehaviour
 			MeshRenderer m = p.GetComponent<MeshRenderer>();
 			m.sharedMaterial = mMat;
 			mRends.Add(m);
-			ParticleSystemRenderer ps = p.GetComponentInChildren<ParticleSystemRenderer>();
-			ps.sharedMaterial = pMat;
-			pRends.Add(ps);
+			ParticleSystemRenderer[] ps = p.GetComponentsInChildren<ParticleSystemRenderer>();
+			foreach (ParticleSystemRenderer pr in ps)
+			{
+				pr.sharedMaterial = pMat;
+				pRends.Add(pr);
+			}
 		}
 		Color mC = mMat.GetColor("_Color");
 		Color mP = pMat.GetColor("_Color");
@@ -64,15 +67,17 @@ public class PlatformAppearer : MonoBehaviour
 		float t = 0;
 		while (true)
 		{
-			yield return null;
 			t = Mathf.Min(t, 1);
 			mMat.SetColor("_Color", Color.Lerp(mC.A(0), mC, t));
-			pMat.SetColor("_Color", Color.Lerp(mP.A(0), mP, t));
+			//pMat.SetColor("_Color", Color.Lerp(mP.A(0), mP, t));
 			if (t >= 1)
 			{
 				break;
 			}
-			t += Time.deltaTime / 0.5f;
+			float duration = t > 230f / 255f ? 5f : (t > 200f / 255f ? 2f : 0.5f);
+			print(duration);
+			t += Time.deltaTime / duration;
+			yield return null;
 		}
 
 		for (int i = 0; i < platforms.Count; ++i)
@@ -82,5 +87,6 @@ public class PlatformAppearer : MonoBehaviour
 		}
 
 		Destroy(gameObject);
+		yield return null;
 	}
 }

@@ -113,7 +113,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
 			RaycastHit hitInfo;
 			Physics.SphereCast(transform.position, m_CharacterController.radius, Vector3.down, out hitInfo,
 							   m_CharacterController.height / 2f, Physics.AllLayers, QueryTriggerInteraction.Ignore);
-			if (hitInfo.normal.y < 0.5f)
+			if (hitInfo.normal.y < 0.6f)
 			{
 				hitInfo.normal = Vector3.up;
 			}
