@@ -91,6 +91,8 @@ namespace UnityStandardAssets.Characters.FirstPerson
 			}
 
 			m_PreviouslyGrounded = m_CharacterController.isGrounded;
+
+			UpdateMovement();
 		}
 
 
@@ -101,11 +103,11 @@ namespace UnityStandardAssets.Characters.FirstPerson
 			m_NextStep = m_StepCycle + .5f;
 		}
 
-
-		private void FixedUpdate()
+		private void UpdateMovement()
 		{
 			float speed;
 			GetInput(out speed);
+			//speed *= Time.deltaTime;
 			// always move along the camera forward as it is the direction that it being aimed at
 			Vector3 desiredMove = transform.forward * m_Input.y + transform.right * m_Input.x;
 
@@ -137,15 +139,16 @@ namespace UnityStandardAssets.Characters.FirstPerson
 			}
 			else
 			{
-				m_MoveDir += Physics.gravity * m_GravityMultiplier * Time.fixedDeltaTime;
+				m_MoveDir += Physics.gravity * m_GravityMultiplier * Time.deltaTime;
 			}
-			m_CollisionFlags = m_CharacterController.Move(m_MoveDir * Time.fixedDeltaTime);
+			m_CollisionFlags = m_CharacterController.Move(m_MoveDir * Time.deltaTime);
 
 			ProgressStepCycle(speed);
 			UpdateCameraPosition(speed);
 
 			m_MouseLook.UpdateCursorLock();
 		}
+	
 
 
 		private void PlayJumpSound()
