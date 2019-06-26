@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class LumpyController : MonoBehaviour
 {
-	private Color DEFAULT_COLOR = new Color(0, 134 / 255f, 191 / 255f);
-	private const float INTENSITY = 2.1f; //1.188807F;
+	private Color DEFAULT_COLOR = new Color(5f / 255f, 191 / 255f, 183 / 255f);  // 05BFB7 new Color(0, 134 / 255f, 191 / 255f); 
+	private const float INTENSITY = 1f; // 2.1f; //1.188807F;
 
 	public static LumpyController instance;
 
@@ -67,8 +67,9 @@ public class LumpyController : MonoBehaviour
 		for (; ; )
 		{
 			//yield return new WaitForSeconds(Random.Range(0.04f, 0.12f));
-			float r = Random.Range(15f, 140f);
-			Color newColor = new Color(r / 255f, Random.Range(r, 190f) / 255f, Random.Range(170f, 220f) / 255f) * Random.Range(1.2f, 2.8f);
+			float r = Random.Range(0f, 90f); // Random.Range(15f, 140f);
+			Color newColor = new Color(r / 255f, Random.Range(0, 190f) / 255f, Random.Range(100f + r, 190f) / 255f); 
+						   //new Color(r / 255f, Random.Range(r, 190f) / 255f, Random.Range(170f, 220f) / 255f) * Random.Range(1.2f, 2.8f);
 			float lerpTime = Random.Range(0.1f, 0.3f);
 			//mat.SetColor("_EmissionColor", newColor);
 			float t = 0;

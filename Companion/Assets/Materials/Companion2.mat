@@ -7,15 +7,14 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Companion
-  m_Shader: {fileID: 4800000, guid: 21c7fa0860ef54c2e898f11d8468eb6d, type: 3}
+  m_Name: Companion2
+  m_Shader: {fileID: 4800000, guid: bfe28e103efd44be8a12fe20b23c0d53, type: 3}
   m_ShaderKeywords: _ALPHAPREMULTIPLY_ON _EMISSION _GLOSSYREFLECTIONS_OFF _SPECULARHIGHLIGHTS_OFF
   m_LightmapFlags: 1
   m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: 3000
-  stringTagMap:
-    RenderType: Transparent
+  stringTagMap: {}
   disabledShaderPasses: []
   m_SavedProperties:
     serializedVersion: 3
@@ -65,19 +64,23 @@ Material:
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
     - _DstBlend: 10
+    - _EmissionStrength: 2
     - _GlossMapScale: 1
     - _Glossiness: 1
     - _GlossyReflections: 0
+    - _InnerEmissionStrength: 0.02
     - _Metallic: 0.2
     - _Mode: 3
     - _OcclusionStrength: 1
     - _Parallax: 0.02
+    - _RimPower: 2.4
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 0
     - _SrcBlend: 1
     - _UVSec: 0
     - _ZWrite: 0
     m_Colors:
-    - _Color: {r: 0.4811321, g: 0.4811321, b: 0.4811321, a: 0.78431374}
-    - _EmissionColor: {r: 0, g: 1.1035295, b: 1.5729412, a: 1}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _ColorTint: {r: 0.105882354, g: 0.98039216, b: 0.9411765, a: 1}
+    - _EmissionColor: {r: 0.019607844, g: 0.7490196, b: 0.7176471, a: 1}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
