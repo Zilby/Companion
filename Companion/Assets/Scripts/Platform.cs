@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityStandardAssets.Characters.FirstPerson;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -10,6 +11,8 @@ using UnityEditor;
 /// </summary>
 public class Platform : MonoBehaviour
 {
+	public bool sticky = false;
+
 	public Material defaultM;
 
 	public Material friendlyM;
@@ -20,7 +23,7 @@ public class Platform : MonoBehaviour
 
 	public ParticleSystemRenderer[] ps;
 
-	public MeshRenderer rend;
+	public MeshRenderer[] rends;
 
 	public Color defaultColor;
 
@@ -52,7 +55,7 @@ public class Platform : MonoBehaviour
 	private void Reset()
 	{
 		ps = GetComponentsInChildren<ParticleSystemRenderer>();
-		rend = GetComponent<MeshRenderer>();
+		rends = GetComponentsInChildren<MeshRenderer>();
 		aSource = GetComponent<AudioSource>();
 		ResetMaterials();
 
@@ -64,7 +67,12 @@ public class Platform : MonoBehaviour
 	{
 		if (other.tag == "Player")
 		{
-			rend.sharedMaterial = friendlyM;
+			FirstPersonController.main.sticky = sticky;
+			FirstPersonController.main.m_StickToGroundForce = sticky ? 10 : 1;
+			foreach (MeshRenderer rend in rends)
+			{
+				rend.sharedMaterial = friendlyM;
+			}
 			foreach (ParticleSystemRenderer pr in ps)
 			{
 				pr.sharedMaterial = friendlyMPS;
@@ -85,6 +93,8 @@ public class Platform : MonoBehaviour
 	{
 		if (other.tag == "Player")
 		{
+			FirstPersonController.main.sticky = false;
+			FirstPersonController.main.m_StickToGroundForce = 1;
 			if (colorLerp != null)
 			{
 				StopCoroutine(colorLerp);
@@ -127,7 +137,10 @@ public class Platform : MonoBehaviour
 			t += Time.deltaTime / duration;
 			yield return null;
 		}
-		rend.sharedMaterial = mat1;
+		foreach (MeshRenderer rend in rends)
+		{
+			rend.sharedMaterial = mat1;
+		}
 		foreach (ParticleSystemRenderer pr in ps)
 		{
 			pr.sharedMaterial = mat2;

@@ -12,15 +12,16 @@ namespace UnityStandardAssets.Characters.FirstPerson
 	{
 		public static FirstPersonController main;
 
-		public bool dying;
+		public bool dying = false;
+		public bool sticky = false;
 
-		[SerializeField] public MouseLook m_MouseLook;
+		public MouseLook m_MouseLook;
 		[SerializeField] private bool m_IsWalking;
 		[SerializeField] private float m_WalkSpeed;
 		[SerializeField] private float m_RunSpeed;
 		[SerializeField] [Range(0f, 1f)] private float m_RunstepLenghten;
 		[SerializeField] private float m_JumpSpeed;
-		[SerializeField] private float m_StickToGroundForce;
+		public float m_StickToGroundForce;
 		[SerializeField] private float m_GravityMultiplier;
 		[SerializeField] private bool m_UseFovKick;
 		[SerializeField] private FOVKick m_FovKick = new FOVKick();
@@ -100,7 +101,8 @@ namespace UnityStandardAssets.Characters.FirstPerson
 		{
 			m_AudioSource.clip = m_LandSound;
 			m_AudioSource.Play();
-			m_NextStep = m_StepCycle + .5f;
+			m_NextStep = m_StepCycle + m_StepInterval;
+			//m_NextStep = m_StepCycle + .5f;
 		}
 
 		private void UpdateMovement()
@@ -115,7 +117,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
 			RaycastHit hitInfo;
 			Physics.SphereCast(transform.position, m_CharacterController.radius, Vector3.down, out hitInfo,
 							   m_CharacterController.height / 2f, Physics.AllLayers, QueryTriggerInteraction.Ignore);
-			if (hitInfo.normal.y < 0.6f)
+			if (hitInfo.normal.y < 0.6f && !sticky)
 			{
 				hitInfo.normal = Vector3.up;
 			}

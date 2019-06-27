@@ -64,9 +64,12 @@ public class PlatformAppearer : MonoBehaviour
 		foreach (GameObject p in platforms)
 		{
 			p.SetActive(true);
-			MeshRenderer m = p.GetComponent<MeshRenderer>();
-			m.sharedMaterial = mMat;
-			mRends.Add(m);
+			MeshRenderer[] ms = p.GetComponentsInChildren<MeshRenderer>();
+			foreach (MeshRenderer m in ms)
+			{
+				m.sharedMaterial = mMat;
+				mRends.Add(m);
+			}
 			ParticleSystemRenderer[] ps = p.GetComponentsInChildren<ParticleSystemRenderer>();
 			foreach (ParticleSystemRenderer pr in ps)
 			{
