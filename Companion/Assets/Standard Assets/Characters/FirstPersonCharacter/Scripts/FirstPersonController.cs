@@ -146,7 +146,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
 			m_CollisionFlags = m_CharacterController.Move(m_MoveDir * Time.deltaTime);
 
 			ProgressStepCycle(speed);
-			UpdateCameraPosition(speed);
+			UpdateCameraPosition(speed * Time.deltaTime);
 
 			m_MouseLook.UpdateCursorLock();
 		}
@@ -165,7 +165,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
 			if (m_CharacterController.velocity.sqrMagnitude > 0 && (m_Input.x != 0 || m_Input.y != 0))
 			{
 				m_StepCycle += (m_CharacterController.velocity.magnitude + (speed * (m_IsWalking ? 1f : m_RunstepLenghten))) *
-							 Time.fixedDeltaTime;
+							 Time.deltaTime;
 			}
 
 			if (!(m_StepCycle > m_NextStep))
