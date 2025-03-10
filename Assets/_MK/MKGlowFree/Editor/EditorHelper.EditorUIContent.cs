@@ -61,13 +61,9 @@ namespace MK.Glow.Editor
 
             internal static void SelectiveWorkflowVRWarning(Workflow workflow)
             {
-                if(UnityEngine.Rendering.GraphicsSettings.renderPipelineAsset != null && workflow == Workflow.Selective)
+                if(UnityEngine.Rendering.GraphicsSettings.defaultRenderPipeline != null && workflow == Workflow.Selective)
                 {
                     EditorGUILayout.HelpBox("Selective workflow isn't supported if a scriptable rendering pipeline is active. Please use Luminance workflow instead. ", MessageType.Warning);
-                }
-                if(PlayerSettings.virtualRealitySupported && workflow == Workflow.Selective)
-                {
-                    EditorGUILayout.HelpBox("Selective workflow isn't supported in XR. Please use Luminance workflow instead. ", MessageType.Warning);
                 }
             }
         }

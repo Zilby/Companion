@@ -49,7 +49,7 @@ namespace MK.Glow.Example
             float scale = Random.Range(_minMaxScale.minValue, _minMaxScale.maxValue);
             transform.localScale = new Vector3(scale, scale, scale);
             _rigidBody = GetComponent<Rigidbody>();
-            _rigidBody.velocity = new Vector3(Random.Range(_minMaxVelocity.minValue, _minMaxVelocity.maxValue), Random.Range(_minMaxVelocity.minValue, _minMaxVelocity.maxValue), Random.Range(_minMaxVelocity.minValue, _minMaxVelocity.maxValue));
+            _rigidBody.linearVelocity = new Vector3(Random.Range(_minMaxVelocity.minValue, _minMaxVelocity.maxValue), Random.Range(_minMaxVelocity.minValue, _minMaxVelocity.maxValue), Random.Range(_minMaxVelocity.minValue, _minMaxVelocity.maxValue));
             _usedMaterial = new Material(_baseMaterial);
             GetComponent<Renderer>().material = _usedMaterial;
             _nextColorIndex = Random.Range(0, _colors.Length);
@@ -82,8 +82,8 @@ namespace MK.Glow.Example
         private void OnCollisionEnter(Collision collision)
         {
             ContactPoint contact = collision.contacts[0];
-            Vector3 reflectedVelocity = Vector3.Reflect(_rigidBody.velocity, contact.normal).normalized;       
-            _rigidBody.velocity = reflectedVelocity;
+            Vector3 reflectedVelocity = Vector3.Reflect(_rigidBody.linearVelocity, contact.normal).normalized;       
+            _rigidBody.linearVelocity = reflectedVelocity;
         }
     }
 }
