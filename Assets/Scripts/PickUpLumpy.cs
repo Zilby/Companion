@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 
 public class PickUpLumpy : MonoBehaviour
@@ -37,12 +38,14 @@ public class PickUpLumpy : MonoBehaviour
 		transform.parent.parent = Camera.main.transform;
 		Rigidbody rBody = GetComponentInParent<Rigidbody>();
 		rBody.isKinematic = true;
-		LumpyController.instance.spinning = true;
+		// LumpyController.instance.spinning = true;
 		float smoothTime = 0.5f;
 		Vector3 velocity = Vector3.zero;
+		Vector3 rVelocity = Vector3.zero;
 		while (Vector3.Distance(transform.parent.localPosition, Vector3.forward) > 0.01f)
 		{
 			transform.parent.localPosition = Vector3.SmoothDamp(transform.parent.localPosition, Vector3.forward, ref velocity, smoothTime);
+			transform.parent.localRotation = Quaternion.Euler(Vector3.SmoothDamp(transform.parent.localRotation.eulerAngles, Vector3.zero, ref rVelocity, smoothTime * Time.deltaTime));
 			yield return null;
 		}
 		yield return GameController.instance.eventBasedDialogues[0].Dialogue();
