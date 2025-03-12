@@ -39,21 +39,25 @@ public class PickUpLumpy : MonoBehaviour
 		Rigidbody rBody = GetComponentInParent<Rigidbody>();
 		rBody.isKinematic = true;
 		// LumpyController.instance.spinning = true;
-		float smoothTime = 0.5f;
-		Vector3 velocity = Vector3.zero;
-		Vector3 rVelocity = Vector3.zero;
+		float duration = 10f;
 		while (Vector3.Distance(transform.parent.localPosition, Vector3.forward) > 0.01f)
 		{
-			transform.parent.localPosition = Vector3.SmoothDamp(transform.parent.localPosition, Vector3.forward, ref velocity, smoothTime);
-			transform.parent.localRotation = Quaternion.Euler(Vector3.SmoothDamp(transform.parent.localRotation.eulerAngles, Vector3.zero, ref rVelocity, smoothTime * Time.deltaTime));
+			float deltaTime = duration * (1.0f - Mathf.Exp(-Time.deltaTime));
+			float smoothTime = Mathf.SmoothStep(0.0f, 1.0f, deltaTime);
+			transform.parent.localPosition = Vector3.Lerp(transform.parent.localPosition, Vector3.forward, smoothTime);
+			transform.parent.localRotation = Quaternion.Slerp(transform.parent.localRotation, Quaternion.identity, smoothTime);
 			yield return null;
 		}
 		yield return GameController.instance.eventBasedDialogues[0].Dialogue();
-		velocity = Vector3.zero;
-		Vector3 holdPosition = new Vector3(0.65f, -0.36f, 1f);
+
+		Vector3 holdPosition = new Vector3(0.75f, -0.3f, 1f);
+		Vector3 holdRotation = new Vector3(12.0f, 38.0f, 0f);
 		while (Vector3.Distance(transform.parent.localPosition, holdPosition) > 0.01f)
 		{
-			transform.parent.localPosition = Vector3.SmoothDamp(transform.parent.localPosition, holdPosition, ref velocity, smoothTime);
+			float deltaTime = duration * (1.0f - Mathf.Exp(-Time.deltaTime));
+			float smoothTime = Mathf.SmoothStep(0.0f, 1.0f, deltaTime);
+			transform.parent.localPosition = Vector3.Lerp(transform.parent.localPosition, holdPosition, smoothTime);
+			transform.parent.localRotation = Quaternion.Slerp(transform.parent.localRotation, Quaternion.Euler(holdRotation), smoothTime);
 			yield return null;
 		}
 		yield return null;
