@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityStandardAssets.Characters.FirstPerson;
@@ -121,10 +122,73 @@ public class UIManager : MonoBehaviour
 	/// Displays the dialogue.
 	/// </summary>
 	/// <param name="text">Text.</param>
-	public void DisplayDialogue(string text)
+	public IEnumerator DisplayDialogue(string text)
 	{
-		dialogueText.text = text;
+		dialogueText.text = "";
 		dialogueTextFadeable.SelfFadeIn(dur:0.2f);
+
+		string colorCode = "<color=#00000000>";
+		string colorTerminator = "</color>";
+		
+		foreach (char letter in text)
+		{
+			if (letter == '_')
+			{
+				continue; 
+			}
+
+			dialogueText.text += colorCode + letter + colorTerminator;
+		}
+
+		const string letters = "abcdefghijklmnopqrstuvwxyz";
+
+		int index = 0; 
+		int skipLetter = 0;
+		foreach (char letter in text)
+		{
+			if (letter == '_')
+			{
+				yield return new WaitForSecondsRealtime(0.2f);
+				continue;
+			}
+
+			index += colorCode.Length;
+
+			char[] chars = dialogueText.text.ToCharArray();
+			chars[index - 2] = 'F';
+			chars[index - 3] = 'F';
+			dialogueText.text = new string(chars);
+
+			index += 1 + colorTerminator.Length;
+
+
+			int alphabetIndex = letters.IndexOf(Char.ToLower(letter));
+			if (alphabetIndex >= 0)
+			{
+				if (skipLetter % 2 == 0) 
+				{
+					LumpyController.instance.PlaySegment(alphabetIndex);
+				}
+				if (skipLetter % 4 == 0)
+				{
+					StartCoroutine(LumpyController.instance.MoveMouth());
+				}
+				skipLetter++;
+			}
+
+			if (".?!".Contains(letter))
+			{
+				yield return new WaitForSecondsRealtime(0.3f);
+			}
+			else if (letter == ' ')
+			{
+				yield return new WaitForSecondsRealtime(0.05f);
+			}
+			else
+			{
+				yield return new WaitForSecondsRealtime(0.03f);
+			}
+		}
 	}
 
 	/// <summary>

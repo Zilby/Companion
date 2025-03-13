@@ -9,7 +9,7 @@ public class DialogueTrigger : MonoBehaviour
 	[System.Serializable]
 	public struct DialogueSegment
 	{
-		public AudioClip clip;
+		public LumpyController.Expression expression;
 		public string text;
 		public float delay;
 	}
@@ -33,11 +33,11 @@ public class DialogueTrigger : MonoBehaviour
 		yield return initialDelay;
 		foreach (DialogueSegment d in segments)
 		{
-			UIManager.instance.DisplayDialogue(d.text);
-			yield return LumpyController.instance.PlaySegment(d.clip);
-			UIManager.instance.FadeDialogue();
+			StartCoroutine(LumpyController.instance.SetExpression(d.expression));
+			yield return UIManager.instance.DisplayDialogue(d.text);
 			yield return new WaitForSeconds(d.delay);
 		}
+		UIManager.instance.FadeDialogue();
 		yield return null;
 		Destroy(gameObject);
 	}
