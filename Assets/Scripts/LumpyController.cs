@@ -57,6 +57,10 @@ public class LumpyController : MonoBehaviour
 
 	public IEnumerator SetExpression(Expression expression)
 	{
+		if (currentExpression == expression)
+		{
+			yield break;
+		}
 		this.currentExpression = expression;
 		float duration = 0.1f;
 		float timeElapsed = 0;
