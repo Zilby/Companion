@@ -9,74 +9,84 @@ using UnityEditor;
 /// <summary>
 /// Platform class for managing platform behavior. 
 /// </summary>
-public class Platform : MonoBehaviour
+public class Platform : FadeableMesh
 {
 	public bool sticky = false;
 
 	public Material defaultM;
 
-	public Material friendlyM;
-
 	public Material defaultMPS;
+
+	public Material friendlyM;
 
 	public Material friendlyMPS;
 
-	public ParticleSystemRenderer[] ps;
+	private ParticleSystemRenderer[] ps;
 
-	public MeshRenderer[] rends;
+	private MeshRenderer[] rends;
 
-	public Color defaultColor;
-
-	public Color friendlyColor;
-
-	public AudioSource aSource;
+	private AudioSource aSource;
 
 	public AudioClip clip;
 
+	private Color defaultColor;
+
+	private Color friendlyColor;
+
+	private Color friendlyMPSColor;
+
+	private Material mInstance;
+
+	private Material mPSInstance;
+
 	private Coroutine colorLerp;
 
-	[InspectorButton("ResetMaterials")]
-	public bool SetUpMaterials;
-
-	public void ResetMaterials()
+	protected override void Reset()
 	{
+		base.Reset();
 		defaultM = Resources.Load<Material>("Platform");
-		friendlyM = new Material(defaultM);
 		defaultMPS = Resources.Load<Material>("PlatformParticles");
-		friendlyMPS = new Material(defaultMPS);
-		defaultColor = defaultM.GetColor("_EmissionColor");
-		friendlyColor = Resources.Load<Material>("PlatformFriendly").GetColor("_EmissionColor");
-		SetFriendlyColors();
+		friendlyM = Resources.Load<Material>("PlatformFriendly");
+		friendlyMPS = Resources.Load<Material>("PlatformParticlesFriendly");
+		clip = Resources.Load<AudioClip>("Basic Note Low");
+		
 #if UNITY_EDITOR
 		EditorUtility.SetDirty(this);
 #endif
 	}
 
-	private void Reset()
-	{
+    protected override void Awake()
+    {
+		base.Awake();
 		ps = GetComponentsInChildren<ParticleSystemRenderer>();
 		rends = GetComponentsInChildren<MeshRenderer>();
 		aSource = GetComponent<AudioSource>();
-		ResetMaterials();
 
-		clip = Resources.Load<AudioClip>("Basic Note Low");
-	}
+		defaultColor = defaultM.GetColor("_EmissionColor");
+		friendlyColor = friendlyM.GetColor("_EmissionColor");
+		friendlyMPSColor = friendlyMPS.GetColor("_EmissionColor");
+
+        mInstance = new Material(defaultM);
+		mPSInstance = new Material(defaultMPS);
+
+		foreach (MeshRenderer rend in rends)
+		{
+			rend.sharedMaterial = mInstance;
+		}
+		foreach (ParticleSystemRenderer pr in ps)
+		{
+			pr.sharedMaterial = mPSInstance;
+		}
+    }
 
 
-	public void OnTriggerEnter(Collider other)
+    public void OnTriggerEnter(Collider other)
 	{
 		if (other.tag == "Player")
 		{
 			FirstPersonController.main.sticky = sticky;
 			FirstPersonController.main.m_StickToGroundForce = sticky ? 10 : 1;
-			foreach (MeshRenderer rend in rends)
-			{
-				rend.sharedMaterial = friendlyM;
-			}
-			foreach (ParticleSystemRenderer pr in ps)
-			{
-				pr.sharedMaterial = friendlyMPS;
-			}
+			
 			if (colorLerp != null)
 			{
 				StopCoroutine(colorLerp);
@@ -84,7 +94,6 @@ public class Platform : MonoBehaviour
 			aSource.pitch = Random.Range(0.45f, 1.3f);
 			aSource.PlayOneShot(clip);
 			SetFriendlyColors();
-			//colorLerp = StartCoroutine(ColorLerp(0.05f, defaultColor, friendlyColor, friendlyM, friendlyMPS));
 		}
 	}
 
@@ -99,7 +108,7 @@ public class Platform : MonoBehaviour
 			{
 				StopCoroutine(colorLerp);
 			}
-			colorLerp = StartCoroutine(ColorLerp(0.6f, friendlyColor, defaultColor, defaultM, defaultMPS));
+			colorLerp = StartCoroutine(ColorLerp(0.6f, friendlyColor, defaultColor, friendlyMPSColor, defaultColor));
 		}
 	}
 
@@ -109,41 +118,28 @@ public class Platform : MonoBehaviour
 	/// </summary>
 	private void SetFriendlyColors()
 	{
-		friendlyM.SetColor("_EmissionColor", friendlyColor);
-		friendlyMPS.SetColor("_EmissionColor", friendlyColor);
-		friendlyMPS.SetColor("_Color", friendlyColor);
+		mInstance.SetColor("_EmissionColor", friendlyColor);
+		mPSInstance.SetColor("_EmissionColor", friendlyMPSColor);
+		mPSInstance.SetColor("_Color", friendlyColor);
 	}
 
-
-	/// <summary>
-	/// Lerps the material colors
-	/// </summary>
-	/// <param name="duration">Duration.</param>
-	/// <param name="color1">Color1.</param>
-	/// <param name="color2">Color2.</param>
-	/// <param name="mat1">Platform mat</param>
-	/// <param name="mat2">Particle System mat</param>
-	private IEnumerator ColorLerp(float duration, Color color1, Color color2, Material mat1, Material mat2)
+	private IEnumerator ColorLerp(float duration, Color mColor1, Color mColor2, Color mPSColor1, Color mPSColor2)
 	{
 		float t = 0;
 		while (true)
 		{
 			t = Mathf.Min(t, 1);
-			friendlyM.SetColor("_EmissionColor", Color.Lerp(color1, color2, t));
+			Color CurrentMColor = Color.Lerp(mColor1, mColor2, t);
+			Color CurrentMPSColor = Color.Lerp(mPSColor1, mPSColor2, t);
+			mInstance.SetColor("_EmissionColor", CurrentMColor);
+			mPSInstance.SetColor("_EmissionColor", CurrentMPSColor);
+			mPSInstance.SetColor("_Color", CurrentMColor); // This is intentionally the platform color so it's more muted
 			if (t >= 1)
 			{
 				break;
 			}
 			t += Time.deltaTime / duration;
 			yield return null;
-		}
-		foreach (MeshRenderer rend in rends)
-		{
-			rend.sharedMaterial = mat1;
-		}
-		foreach (ParticleSystemRenderer pr in ps)
-		{
-			pr.sharedMaterial = mat2;
 		}
 	}
 }

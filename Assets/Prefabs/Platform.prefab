@@ -68,11 +68,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   platformSet: {fileID: 0}
   platforms: []
-  defaultM: {fileID: 2100000, guid: 33917ebe479cf425a8053a313d93e3fc, type: 2}
-  defaultP: {fileID: 2100000, guid: c861ef43f1cbe4da5872c3171e1ccf4f, type: 2}
-  mMat: {fileID: 0}
-  pMat: {fileID: 0}
-  SetUpMaterials: 0
 --- !u!1 &7844816241532755611
 GameObject:
   m_ObjectHideFlags: 0
@@ -191,19 +186,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0dba329c04da41af8e684f69c7d2b96, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  fadeOnEnable: 0
+  fadeIn: 1
+  disableOnFadeOut: 0
+  hitboxDuringFade: 0
+  renderers:
+  - {fileID: 8606451075836598673}
+  particleRenderers:
+  - {fileID: 8606451076941878917}
+  cols:
+  - {fileID: 8606451075836598672}
+  - {fileID: 1704767602}
+  - {fileID: 785335745458618911}
   sticky: 0
   defaultM: {fileID: 2100000, guid: 33917ebe479cf425a8053a313d93e3fc, type: 2}
-  friendlyM: {fileID: 0}
   defaultMPS: {fileID: 2100000, guid: c861ef43f1cbe4da5872c3171e1ccf4f, type: 2}
-  friendlyMPS: {fileID: 0}
-  ps:
-  - {fileID: 0}
-  rends: []
-  defaultColor: {r: 1, g: 1, b: 1, a: 1}
-  friendlyColor: {r: 0.45135143, g: 0.95759696, b: 1.1649746, a: 1}
-  aSource: {fileID: 717875789034724421}
+  friendlyM: {fileID: 2100000, guid: ce8d4d2d622dc2a488a7a5adff5469c3, type: 2}
+  friendlyMPS: {fileID: 2100000, guid: 3415bafe3119dd3459f1024ec5d8aa7f, type: 2}
   clip: {fileID: 8300000, guid: cc54c68fa33764f04bd3c2893be88593, type: 3}
-  SetUpMaterials: 0
 --- !u!33 &8606451075836598686
 MeshFilter:
   m_ObjectHideFlags: 0

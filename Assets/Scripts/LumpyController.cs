@@ -166,8 +166,6 @@ public class LumpyController : MonoBehaviour
 			float deltaTime = duration * 100 * (1.0f - Mathf.Exp(-Time.deltaTime));
 			float smoothTime = Mathf.SmoothStep(0.0f, 1.0f, deltaTime);
 			face.transform.localRotation = Quaternion.Slerp(face.transform.localRotation, Quaternion.Euler(expressionRotation), smoothTime);
-			print(expressionRotation);
-			print(face.transform.localEulerAngles);
             
             yield return null;
             timeElapsed += Time.deltaTime;

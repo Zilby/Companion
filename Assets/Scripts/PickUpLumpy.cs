@@ -62,7 +62,7 @@ public class PickUpLumpy : MonoBehaviour
 			yield return null;
 		}
 		yield return null;
-		GameController.instance.StartCoroutine(GameController.instance.FadeWall());
+		StartCube.instance.StartCoroutine(StartCube.instance.FadeWall());
 		Destroy(gameObject);
 	}
 }

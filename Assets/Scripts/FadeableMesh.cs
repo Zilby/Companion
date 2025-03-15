@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 
 /// <summary>
@@ -7,20 +8,30 @@ using System.Collections;
 /// </summary>
 public class FadeableMesh : Fadeable
 {
-    /// <summary>
-    /// The canvas group that will be Faded In/Out
-    /// </summary>
     [SerializeField]
-	protected MeshRenderer rend;
+	protected List<MeshRenderer> renderers;
+
+    [SerializeField]
+	protected List<ParticleSystemRenderer> particleRenderers;
 
 	[SerializeField]
-	protected Collider col;
+	protected List<Collider> cols;
 
-	public MeshRenderer Rend
+    protected float alpha;
+
+	public List<MeshRenderer> Renderers
     {
         get
         {
-            return rend;
+            return renderers;
+        }
+    }
+
+    public List<ParticleSystemRenderer> ParticleRenderers
+    {
+        get
+        {
+            return particleRenderers;
         }
     }
 
@@ -29,12 +40,26 @@ public class FadeableMesh : Fadeable
     {
         get
         {
-			return rend.sharedMaterial.color.a;
+            return alpha;
         }
 
         set
         {
-			rend.sharedMaterial.color = rend.sharedMaterial.color.A(value);
+            alpha = value;
+            foreach (MeshRenderer rend in renderers)
+            {
+                if (rend.sharedMaterial != null)
+                {
+			        rend.sharedMaterial.color = rend.sharedMaterial.color.A(alpha);
+                }
+            }
+            foreach (ParticleSystemRenderer rend in particleRenderers)
+            {
+                if (rend.sharedMaterial != null)
+                {
+			        rend.sharedMaterial.color = rend.sharedMaterial.color.A(alpha);
+                }
+            }
         }
     }
 
@@ -50,21 +75,34 @@ public class FadeableMesh : Fadeable
     {
         set
         {
-			if (col)
-			{
-				col.enabled = value;
+			foreach (Collider col in cols)
+            {
+                if (col != null)
+                {
+				    col.enabled = value;
+                }
 			}
         }
     }
 
     protected virtual void Reset()
     {
-		rend = GetComponent<MeshRenderer>();
-        if (rend == null)
-        {
-			rend = gameObject.AddComponent<MeshRenderer>();
-        }
-		col = GetComponent<Collider>();
+        renderers = new List<MeshRenderer>(GetComponentsInChildren<MeshRenderer>());
+        particleRenderers = new List<ParticleSystemRenderer>(GetComponentsInChildren<ParticleSystemRenderer>());
+		cols = new List<Collider>(GetComponentsInChildren<Collider>()); 
+    }
 
+    protected override void Awake()
+    {
+        alpha = 0;
+        foreach (MeshRenderer rend in renderers)
+        {
+            if (rend.sharedMaterial != null)
+            {
+                alpha = rend.sharedMaterial.color.a;
+                break;
+            }
+        }
+        base.Awake();
     }
 }
