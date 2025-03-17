@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityStandardAssets.Characters.FirstPerson;
 using UnityStandardAssets.CrossPlatformInput;
 
@@ -34,6 +35,33 @@ public class UIManager : MonoBehaviour
 		checkForInput = StartCoroutine(CheckForInput());
 	}
 
+	public void RefreshLayout(RectTransform transform) 
+	{
+		if (transform.TryGetComponent<LayoutGroup>(out var layoutGroup)) 
+		{
+			layoutGroup.CalculateLayoutInputHorizontal();
+			layoutGroup.CalculateLayoutInputVertical();
+			layoutGroup.SetLayoutHorizontal();
+			layoutGroup.SetLayoutVertical();
+		}
+
+		if (transform.TryGetComponent<ContentSizeFitter>(out var contentSizeFitter)) 
+		{
+			contentSizeFitter.SetLayoutHorizontal();
+			contentSizeFitter.SetLayoutVertical();
+		}
+
+		for (int i = 0; i < transform.childCount; ++i) 
+		{
+			var child = transform.GetChild(i);
+
+			if (child is RectTransform rect) 
+			{
+				RefreshLayout(rect);
+			}
+		}
+    }
+
 	private IEnumerator CheckForInput()
 	{
 		for (; ; )
@@ -63,9 +91,11 @@ public class UIManager : MonoBehaviour
 
 	private IEnumerator Tutorial()
 	{
+		var textTransform = instructionTextFadeable.transform as RectTransform;
 		yield return darkener.DelayedFadeOut(dur: 1);
 
 		instructionText.text = "Use the mouse to look around";
+		RefreshLayout(textTransform);
 		yield return new WaitForSeconds(0.5f);
 		yield return instructionTextFadeable.FadeIn();
 		yield return new WaitForSeconds(2f);
@@ -76,6 +106,7 @@ public class UIManager : MonoBehaviour
 		yield return instructionTextFadeable.FadeOut();
 
 		instructionText.text = "Use WASD to move";
+		RefreshLayout(textTransform);
 		yield return new WaitForSeconds(0.25f);
 		yield return instructionTextFadeable.FadeIn();
 		yield return new WaitForSeconds(2f);
@@ -86,6 +117,7 @@ public class UIManager : MonoBehaviour
 		yield return instructionTextFadeable.FadeOut();
 
 		instructionText.text = "Use the spacebar to jump";
+		RefreshLayout(textTransform);
 		yield return new WaitForSeconds(0.25f);
 		yield return instructionTextFadeable.FadeIn();
 		yield return new WaitForSeconds(2f);
@@ -107,6 +139,7 @@ public class UIManager : MonoBehaviour
 	{
 		instructionText.text = text;
 		instructionTextFadeable.SelfFadeIn();
+		RefreshLayout(instructionTextFadeable.transform as RectTransform);
 	}
 
 	/// <summary>
@@ -127,7 +160,7 @@ public class UIManager : MonoBehaviour
 		dialogueText.text = "";
 		dialogueTextFadeable.SelfFadeIn(dur:0.2f);
 
-		string colorCode = "<color=#00000000>";
+		string colorCode = "<color=#FFFFFF00>";
 		string colorTerminator = "</color>";
 		
 		foreach (char letter in text)
