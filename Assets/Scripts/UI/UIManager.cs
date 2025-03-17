@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -174,6 +172,7 @@ public class UIManager : MonoBehaviour
 		}
 
 		const string letters = "abcdefghijklmnopqrstuvwxyz";
+		const string punctuation = "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
 
 		int index = 0; 
 		int skipLetter = 0;
@@ -198,20 +197,22 @@ public class UIManager : MonoBehaviour
 			int alphabetIndex = letters.IndexOf(Char.ToLower(letter));
 			if (alphabetIndex >= 0)
 			{
-				if (skipLetter % 2 == 0) 
-				{
-					LumpyController.instance.PlaySegment(alphabetIndex);
-				}
-				if (skipLetter % 4 == 0)
+				LumpyController.instance.PlaySegment(alphabetIndex);
+
+				if (skipLetter % LumpyController.instance.mouthMoveFrequency == 0)
 				{
 					StartCoroutine(LumpyController.instance.MoveMouth());
 				}
 				skipLetter++;
 			}
 
-			if (".?!".Contains(letter))
+			if ("!?.".Contains(letter))
 			{
-				yield return new WaitForSecondsRealtime(0.3f);
+				yield return new WaitForSecondsRealtime(0.6f);
+			}
+			else if (",;:".Contains(letter))
+			{
+				yield return new WaitForSecondsRealtime(0.15f);
 			}
 			else if (letter == ' ')
 			{

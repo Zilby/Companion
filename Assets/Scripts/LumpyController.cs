@@ -33,13 +33,19 @@ public class LumpyController : MonoBehaviour
 
 	public List<AudioClip> dialogueAudioClips;
 
-	private Expression currentExpression = Expression.Asleep;
+	public float voicelinePitch = 2.0f;
+
+	public int mouthMoveFrequency;
+
+	private Expression currentExpression = Expression.Neutral;
 
 	private Coroutine talk;
 
 	private bool bMovingMouth;
 
 	private AudioSource aSource;
+
+	private int cachedAudioIndex = -1;
 
 	private void Awake()
 	{
@@ -52,9 +58,24 @@ public class LumpyController : MonoBehaviour
 		StartCoroutine(SetExpression(Expression.Asleep));
     }
 
+    private void Update()
+    {
+        if (cachedAudioIndex != -1 && !aSource.isPlaying)
+		{
+			PlaySegment(cachedAudioIndex);
+			cachedAudioIndex = -1;
+		}
+    }
+
     public void PlaySegment(int index) 
 	{
+		if (aSource.isPlaying)
+		{
+			cachedAudioIndex = index;
+			return;
+		}
 		aSource.clip = dialogueAudioClips[index];
+		aSource.pitch = Random.Range(voicelinePitch - 0.2f, voicelinePitch + 0.2f);
 		aSource.Play();
 	}
 
