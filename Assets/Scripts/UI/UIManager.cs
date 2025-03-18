@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityStandardAssets.Characters.FirstPerson;
@@ -13,13 +15,11 @@ public class UIManager : MonoBehaviour
 	public Fadeable darkener;
 	public TextMeshProUGUI instructionText;
 	public Fadeable instructionTextFadeable;
+	public GameObject dialogueContainer;
 	public TextMeshProUGUI dialogueText;
 	public Fadeable dialogueTextFadeable;
-
-	private Coroutine checkForInput;
-	private bool mouseMoved = false;
-	private bool characterMoved = false;
-	private bool characterJumped = false;
+	public Fadeable choiceTextFadeable;
+	public Image choiceBar;
 
 	private void Awake()
 	{
@@ -30,11 +30,20 @@ public class UIManager : MonoBehaviour
 	{
 		darkener.Show();
 		StartCoroutine(Tutorial());
-		checkForInput = StartCoroutine(CheckForInput());
 	}
 
 	public void RefreshLayout(RectTransform transform) 
 	{
+		for (int i = 0; i < transform.childCount; ++i) 
+		{
+			var child = transform.GetChild(i);
+
+			if (child is RectTransform rect) 
+			{
+				RefreshLayout(rect);
+			}
+		}
+
 		if (transform.TryGetComponent<LayoutGroup>(out var layoutGroup)) 
 		{
 			layoutGroup.CalculateLayoutInputHorizontal();
@@ -48,44 +57,8 @@ public class UIManager : MonoBehaviour
 			contentSizeFitter.SetLayoutHorizontal();
 			contentSizeFitter.SetLayoutVertical();
 		}
-
-		for (int i = 0; i < transform.childCount; ++i) 
-		{
-			var child = transform.GetChild(i);
-
-			if (child is RectTransform rect) 
-			{
-				RefreshLayout(rect);
-			}
-		}
-    }
-
-	private IEnumerator CheckForInput()
-	{
-		for (; ; )
-		{
-			if (!mouseMoved && (
-				Mathf.Abs(CrossPlatformInputManager.GetAxis("Mouse X") * FirstPersonController.main.m_MouseLook.XSensitivity) > 0 ||
-				Mathf.Abs(CrossPlatformInputManager.GetAxis("Mouse Y") * FirstPersonController.main.m_MouseLook.YSensitivity) > 0))
-			{
-				mouseMoved = true;
-			}
-
-			if (!characterMoved && (
-				Mathf.Abs(CrossPlatformInputManager.GetAxis("Horizontal")) > 0 ||
-				Mathf.Abs(CrossPlatformInputManager.GetAxis("Vertical")) > 0))
-			{
-				characterMoved = true;
-			}
-
-			if (!characterJumped && CrossPlatformInputManager.GetButtonDown("Jump"))
-			{
-				characterJumped = true;
-			}
-
-			yield return null;
-		}
-	}
+		// LayoutRebuilder.ForceRebuildLayoutImmediate(transform);
+    }		
 
 	private IEnumerator Tutorial()
 	{
@@ -95,37 +68,50 @@ public class UIManager : MonoBehaviour
 		instructionText.text = "Use the mouse to look around";
 		RefreshLayout(textTransform);
 		yield return new WaitForSeconds(0.5f);
-		yield return instructionTextFadeable.FadeIn();
-		yield return new WaitForSeconds(2f);
-		while (!mouseMoved)
+		instructionTextFadeable.SelfFadeIn();
+		for (;;)
 		{
-			yield return new WaitForSeconds(0.25f);
+			if (Mathf.Abs(CrossPlatformInputManager.GetAxis("Mouse X") * FirstPersonController.main.m_MouseLook.XSensitivity) > 0 ||
+				Mathf.Abs(CrossPlatformInputManager.GetAxis("Mouse Y") * FirstPersonController.main.m_MouseLook.YSensitivity) > 0)
+			{
+				break;
+			}
+			yield return null;
 		}
+		yield return new WaitForSeconds(0.5f);
 		yield return instructionTextFadeable.FadeOut();
 
 		instructionText.text = "Use WASD to move";
 		RefreshLayout(textTransform);
 		yield return new WaitForSeconds(0.25f);
-		yield return instructionTextFadeable.FadeIn();
-		yield return new WaitForSeconds(2f);
-		while (!characterMoved)
+		instructionTextFadeable.SelfFadeIn();
+		for (;;)
 		{
-			yield return new WaitForSeconds(0.25f);
+			if (Mathf.Abs(CrossPlatformInputManager.GetAxis("Horizontal")) > 0 ||
+				Mathf.Abs(CrossPlatformInputManager.GetAxis("Vertical")) > 0)
+			{
+				break;
+			}
+			yield return null;
 		}
+		yield return new WaitForSeconds(0.5f);
 		yield return instructionTextFadeable.FadeOut();
 
 		instructionText.text = "Use the spacebar to jump";
 		RefreshLayout(textTransform);
 		yield return new WaitForSeconds(0.25f);
-		yield return instructionTextFadeable.FadeIn();
-		yield return new WaitForSeconds(2f);
-		while (!characterJumped)
+		instructionTextFadeable.SelfFadeIn();
+		for (;;)
 		{
-			yield return new WaitForSeconds(0.25f);
+			if (CrossPlatformInputManager.GetButtonDown("Jump"))
+			{
+				break;
+			}
+			yield return null;
 		}
+		yield return new WaitForSeconds(0.5f);
 		yield return instructionTextFadeable.FadeOut();
 
-		StopCoroutine(checkForInput);
 		StartCoroutine(GameController.instance.SpawnLumpy());
 	}
 
@@ -156,7 +142,6 @@ public class UIManager : MonoBehaviour
 	public IEnumerator DisplayDialogue(string text)
 	{
 		dialogueText.text = "";
-		dialogueTextFadeable.SelfFadeIn(dur:0.2f);
 
 		string colorCode = "<color=#FFFFFF00>";
 		string colorTerminator = "</color>";
@@ -171,8 +156,11 @@ public class UIManager : MonoBehaviour
 			dialogueText.text += colorCode + letter + colorTerminator;
 		}
 
+		dialogueTextFadeable.SelfFadeIn(dur:0.2f);
+		RefreshLayout(dialogueContainer.transform as RectTransform);
+
 		const string letters = "abcdefghijklmnopqrstuvwxyz";
-		const string punctuation = "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
+		// const string punctuation = "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
 
 		int index = 0; 
 		int skipLetter = 0;
@@ -219,20 +207,54 @@ public class UIManager : MonoBehaviour
 				yield return new WaitForSecondsRealtime(0.05f);
 			}
 			else
-			{
+			{	
 				yield return new WaitForSecondsRealtime(0.03f);
 			}
 		}
 	}
 
-	/// <summary>
-	/// Fades the dialogue.
-	/// </summary>
-	public void FadeDialogue()
+	public IEnumerator DisplayQuestion(List<DialogueTrigger.DialogueResponse> responses)
 	{
-		dialogueTextFadeable.SelfFadeOut(dur:0.2f);
+		choiceTextFadeable.SelfFadeIn(dur:0.2f);
+
+		var choiceTransform = choiceBar.transform as RectTransform;
+		choiceTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal,  700.0f);
+
+		float duration = 10.0f;
+		float timeElapsed = 0;
+		while (timeElapsed < duration)
+        {
+			if (CrossPlatformInputManager.GetButtonDown("Fire1"))
+			{
+				yield return DisplayResponse(responses[0]);
+				break;
+			}
+			if (CrossPlatformInputManager.GetButtonDown("Fire2"))
+			{
+				yield return DisplayResponse(responses[1]);
+				break;
+			}
+			choiceTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal,  Mathf.Lerp(700.0f, 20, timeElapsed / duration));
+            yield return null;
+            timeElapsed += Time.deltaTime;
+        }
+
+		if (timeElapsed >= duration)
+		{
+			yield return DisplayResponse(responses[2]);
+		}
+
+		yield return null;
 	}
 
+	public IEnumerator DisplayResponse(DialogueTrigger.DialogueResponse response)
+	{
+		choiceTextFadeable.SelfFadeOut(dur:0.2f);
+		yield return dialogueTextFadeable.FadeOut(dur:0.2f);
+		LumpyController.instance.StartCoroutine(LumpyController.instance.SetExpression(response.expression));
+		yield return DisplayDialogue(response.text);
+		yield return new WaitForSeconds(response.delay);
+	}
 
 	/// <summary>
 	/// Fades the screen black and back. 

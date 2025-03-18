@@ -12,6 +12,16 @@ public class DialogueTrigger : MonoBehaviour
 		public LumpyController.Expression expression;
 		public string text;
 		public float delay;
+
+		public List<DialogueResponse> responses;
+	}
+
+	[System.Serializable]
+	public struct DialogueResponse
+	{
+		public LumpyController.Expression expression;
+		public string text;
+		public float delay;
 	}
 
 
@@ -33,11 +43,16 @@ public class DialogueTrigger : MonoBehaviour
 		yield return initialDelay;
 		foreach (DialogueSegment d in segments)
 		{
-			StartCoroutine(LumpyController.instance.SetExpression(d.expression));
+			LumpyController.instance.StartCoroutine(LumpyController.instance.SetExpression(d.expression));
 			yield return UIManager.instance.DisplayDialogue(d.text);
 			yield return new WaitForSeconds(d.delay);
+
+			if (d.responses.Count > 2)
+			{
+				yield return UIManager.instance.DisplayQuestion(d.responses);
+			}
+			yield return UIManager.instance.dialogueTextFadeable.FadeOut(dur:0.2f);
 		}
-		UIManager.instance.FadeDialogue();
 		yield return null;
 		Destroy(gameObject);
 	}

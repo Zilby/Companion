@@ -110,7 +110,10 @@ public abstract class Fadeable : MonoBehaviour
     {
         IsVisible = false;
         Alpha = 0;
-        Active = false;
+        if (disableOnFadeOut) 
+        {
+           Active = false;
+        }
 		BlocksRaycasts = false;
     }
 
@@ -182,11 +185,11 @@ public abstract class Fadeable : MonoBehaviour
             timeElapsed += useUnscaledDeltaTimeForUI ? Time.unscaledDeltaTime : Time.deltaTime;
         }
         Alpha = endAlpha;
-        Active = Alpha != 0;
         isFading = false;
 		BlocksRaycasts = false;
-        if (disableOnFadeOut) {
-            gameObject.SetActive(false);
+        if (disableOnFadeOut) 
+        {
+           Active = false;
         }
         yield break;
     }
