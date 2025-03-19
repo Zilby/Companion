@@ -21,6 +21,8 @@ public class LumpyController : MonoBehaviour
 		Asleep, 
 		Inquisitive,
 		Pleased,
+		Relieved,
+		Determined,
 	}
 
 	public static LumpyController instance;
@@ -129,6 +131,10 @@ public class LumpyController : MonoBehaviour
 				newMouthWeights.Add(1, 100);
 				newMouthWeights.Add(2, 100);
 				break;
+			case Expression.Determined:
+				newEyeWeights.Add(4, 100);
+				newMouthWeights.Add(1, 40);
+				break;
 			case Expression.Annoyed:
 				newEyeWeights.Add(4, 100);
 				newMouthWeights.Add(3, 50);
@@ -159,6 +165,10 @@ public class LumpyController : MonoBehaviour
 				break;
 			case Expression.Inquisitive:
 				newEyeWeights.Add(10, 100);
+				break;
+			case Expression.Relieved:
+				newEyeWeights.Add(6, 60);
+				newMouthWeights.Add(1, 40);
 				break;
 		}
 
@@ -193,6 +203,40 @@ public class LumpyController : MonoBehaviour
         }
 	}
 
+	public float GetBlinkMax()
+	{
+		switch (currentExpression)
+		{
+			case Expression.Asleep:
+				return 0;
+			case Expression.Delighted:
+				return 40;
+			case Expression.Happy:
+			case Expression.Sad:
+			case Expression.Unimpressed:
+				return 60;
+			case Expression.Angry:
+				return 70;
+			case Expression.Annoyed:
+			case Expression.Tired:
+			case Expression.Inquisitive:
+			case Expression.Relieved:
+			case Expression.Determined:
+				return 80;
+		}
+		return 100;
+	}
+
+	public float GetMouthMax()
+	{
+		switch (currentExpression)
+		{
+			case Expression.Asleep:
+				return 30;
+		}
+		return 100;
+	}
+
 	public IEnumerator Blink()
 	{
 		yield return new WaitForSecondsRealtime(Random.Range(2f, 4.5f));
@@ -217,28 +261,6 @@ public class LumpyController : MonoBehaviour
 		eyes.SetBlendShapeWeight(0, 0);
 
 		yield return Blink();
-	}
-
-	public float GetBlinkMax()
-	{
-		switch (currentExpression)
-		{
-			case Expression.Asleep:
-				return 0;
-			case Expression.Delighted:
-				return 40;
-			case Expression.Happy:
-			case Expression.Sad:
-			case Expression.Unimpressed:
-				return 60;
-			case Expression.Angry:
-				return 70;
-			case Expression.Annoyed:
-			case Expression.Tired:
-			case Expression.Inquisitive:
-				return 80;
-		}
-		return 100;
 	}
 
 	public IEnumerator MoveMouth()
@@ -266,25 +288,5 @@ public class LumpyController : MonoBehaviour
 		bMovingMouth = false;
 
 		mouth.SetBlendShapeWeight(0, 0);
-	}
-
-	public float GetMouthMax()
-	{
-		switch (currentExpression)
-		{
-			case Expression.Asleep:
-				return 30;
-			case Expression.Delighted:
-			case Expression.Pleased:
-			case Expression.Happy:
-			case Expression.Sad:
-			case Expression.Unimpressed:
-			case Expression.Angry:
-			case Expression.Annoyed:
-			case Expression.Tired:
-			case Expression.Inquisitive:
-				return 100;
-		}
-		return 100;
 	}
 }

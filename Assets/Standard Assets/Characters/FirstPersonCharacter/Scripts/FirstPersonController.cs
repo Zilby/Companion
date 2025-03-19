@@ -47,6 +47,11 @@ namespace UnityStandardAssets.Characters.FirstPerson
 		private bool m_Jumping;
 		private AudioSource m_AudioSource;
 
+		public Vector3 Velocity 
+		{
+			get { return m_MoveDir; }
+		}
+
 		private void Awake()
 		{
 			main = this;
