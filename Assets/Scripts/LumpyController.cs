@@ -39,15 +39,22 @@ public class LumpyController : MonoBehaviour
 
 	public int mouthMoveFrequency;
 
-	private Expression currentExpression = Expression.Neutral;
+	public float bobDurationMin = 1.0f;
 
-	private Coroutine talk;
+	public float bobDurationMax = 2.0f;
+
+	public float bobDistanceMin = 10.0f;
+
+	public float bobDistanceMax = 15.0f;
+
+	private Expression currentExpression = Expression.Neutral;
 
 	private bool bMovingMouth;
 
 	private AudioSource aSource;
 
 	private int cachedAudioIndex = -1;
+
 
 	private void Awake()
 	{
@@ -194,12 +201,12 @@ public class LumpyController : MonoBehaviour
 				mouth.SetBlendShapeWeight(i, Mathf.Lerp(oldMouthWeights[i], newWeight, timeElapsed / duration));
 			}
 
-			float deltaTime = duration * 100 * (1.0f - Mathf.Exp(-Time.deltaTime));
+			float deltaTime = duration * 100 * (1.0f - Mathf.Exp(-Time.smoothDeltaTime));
 			float smoothTime = Mathf.SmoothStep(0.0f, 1.0f, deltaTime);
 			face.transform.localRotation = Quaternion.Slerp(face.transform.localRotation, Quaternion.Euler(expressionRotation), smoothTime);
             
             yield return null;
-            timeElapsed += Time.deltaTime;
+            timeElapsed += Time.smoothDeltaTime;
         }
 	}
 
@@ -247,7 +254,7 @@ public class LumpyController : MonoBehaviour
         {
             eyes.SetBlendShapeWeight(0, Mathf.Lerp(0, GetBlinkMax(), timeElapsed / duration));
             yield return null;
-            timeElapsed += Time.deltaTime;
+            timeElapsed += Time.smoothDeltaTime;
         }
 
 		timeElapsed = 0;
@@ -255,7 +262,7 @@ public class LumpyController : MonoBehaviour
         {
             eyes.SetBlendShapeWeight(0, Mathf.Lerp(GetBlinkMax(), 0, timeElapsed / duration));
             yield return null;
-            timeElapsed += Time.deltaTime;
+            timeElapsed += Time.smoothDeltaTime;
         }
 
 		eyes.SetBlendShapeWeight(0, 0);
@@ -273,7 +280,7 @@ public class LumpyController : MonoBehaviour
         {
             mouth.SetBlendShapeWeight(0, Mathf.SmoothStep(0, GetMouthMax(), timeElapsed / inDuration));
             yield return null;
-            timeElapsed += Time.deltaTime;
+            timeElapsed += Time.smoothDeltaTime;
         }
 
 		yield return new WaitForSeconds(0.01f);
@@ -283,10 +290,37 @@ public class LumpyController : MonoBehaviour
         {
             mouth.SetBlendShapeWeight(0, Mathf.SmoothStep(GetMouthMax(), 0, timeElapsed / outDuration));
             yield return null;
-            timeElapsed += Time.deltaTime;
+            timeElapsed += Time.smoothDeltaTime;
         }
 		bMovingMouth = false;
 
 		mouth.SetBlendShapeWeight(0, 0);
+	}
+
+	public void StartBobbing()
+	{
+		foreach (var vec in new Vector3[]{Vector3.right, Vector3.up, Vector3.forward})
+		{
+			StartCoroutine(Bob(vec, true));
+		}
+	}
+
+	public IEnumerator Bob(Vector3 axis, bool bIn)
+	{
+		Transform meshTransform = transform.GetChild(0).transform;
+		float duration = Random.Range(bobDurationMin, bobDurationMax);
+		float distance = Random.Range(bobDistanceMin, bobDistanceMax);
+		distance *= bIn ? 1 : -1;
+		Vector3 inverse = axis.XYZSub(1).XYZMul(-1);
+		Vector3 oldPosition = Vector3.Scale(axis, meshTransform.localPosition);
+		float oldDistance = oldPosition.x + oldPosition.y + oldPosition.z;
+		float timeElapsed = 0;
+		while (timeElapsed < duration)
+		{
+			meshTransform.localPosition = Vector3.Scale(inverse, meshTransform.localPosition) + axis.XYZMul(Mathf.SmoothStep(oldDistance, distance, timeElapsed / duration));
+			yield return null;
+			timeElapsed += Time.smoothDeltaTime;
+		}
+		yield return Bob(axis, !bIn);
 	}
 }
