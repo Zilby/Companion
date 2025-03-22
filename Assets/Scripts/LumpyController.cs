@@ -94,7 +94,7 @@ public class LumpyController : MonoBehaviour
 		{
 			yield break;
 		}
-		this.currentExpression = expression;
+		currentExpression = expression;
 		float duration = 0.15f;
 		float timeElapsed = 0;
 		Dictionary<int, float> oldEyeWeights = new Dictionary<int, float>();

@@ -40,7 +40,6 @@ public class PickUpLumpy : MonoBehaviour
 		rBody.isKinematic = true;
 		LumpyController.instance.StartCoroutine(LumpyController.instance.Blink());
 		LumpyController.instance.StartBobbing();
-		// LumpyController.instance.spinning = true;
 		float duration = 10f;
 		while (Vector3.Distance(transform.parent.localPosition, Vector3.forward) > 0.01f)
 		{
